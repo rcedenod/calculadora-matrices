@@ -5,6 +5,11 @@ const randomAButton = document.getElementById("randomA");
 const randomBButton = document.getElementById("randomB");
 const clearAButton = document.getElementById("clearA");
 const clearBButton = document.getElementById("clearB");
+//retorna una lista con todos los elementos html que coincidan con el selector
+const operations = document.querySelectorAll(".operations button");
+const resultText = document.querySelector(".footer h2") 
+const resultContainer = document.getElementById("result");
+const messageDiv = document.getElementById("message");
 
 let n = parseInt(selectSize.value);
 let matrixA = [];
@@ -64,8 +69,142 @@ function clearMatrix(matrixArray, container) {
     });
 }
 
+// a continuacion tenemos las funciones de las operaciones matematicas
+// las cuales retornan siempre una matriz
+
+// suma de matrices
+function addMatrices(A, B) {
+    const C = [];
+    for (let i = 0; i < n; i++) {
+        C[i] = [];
+        for (let j = 0; j < n; j++) {
+            C[i][j] = A[i][j] + B[i][j];
+        }
+    }
+    return C;
+}
+
+// resta de matrices
+function subMatrices(A, B) {
+    const C = [];
+    for (let i = 0; i < n; i++) {
+        C[i] = [];
+        for (let j = 0; j < n; j++) {
+            C[i][j] = A[i][j] - B[i][j];
+        }
+    }
+    return C;
+}
+
+// multiplicacion de matrices
+function multiplyMatrices(A, B) {
+    const C = [];
+    for (let i = 0; i < n; i++) {
+        C[i] = [];
+        for (let j = 0; j < n; j++) {
+            let sum = 0;
+            for (let k = 0; k < n; k++) {
+                sum += A[i][k] * B[k][j];
+            }
+            C[i][j] = sum;
+        }
+    }
+    return C;
+}
+
+// multiplicar por escalar
+function scalarMultiply(A, k) {
+    const C = [];
+    for (let i = 0; i < A.length; i++) {
+        C[i] = [];
+        for (let j = 0; j < A.length; j++) {
+            C[i][j] = A[i][j] * k;
+        }
+    }
+    return C;
+}
+
+// leo los inputs de la matriz para colocarlos en su array 
+function readMatrix(matrixArray, container) {
+    const inputs = container.querySelectorAll("input");
+    inputs.forEach((input, index) => {
+        const i = Math.floor(index / n);
+        const j = index % n;
+        matrixArray[i][j] = parseFloat(input.value) || 0;
+    });
+}
+
+// muestra la matriz en el contenedor de los resultados
+function displayMatrix(matrix) {
+    resultContainer.innerHTML = "";
+    resultContainer.style.gridTemplateColumns = `repeat(${matrix.length}, auto)`;
+    // por cada fila
+    matrix.forEach(row => {
+        // por cada elemento (columna), crea un input no editable con su valor del
+        // array de matrices
+        row.forEach(val => {
+            const cell = document.createElement("input");
+            cell.type = "number";
+            cell.value = val;
+            cell.disabled = true;
+            resultContainer.appendChild(cell);
+        });
+    });
+}
+
+// manejar los eventos para cada boton del contenedor "operations"
+operations.forEach(button => {
+    button.addEventListener("click", () => {
+        // vacio el resultado antes de manejar la operacion, en caso de que
+        // se haya hecho alguna antes
+        resultContainer.innerHTML = "";
+        // aprovecho el atributo personalizado "data-op" que representa
+        // la operacion que realiza cada boton para hacer un switch
+        // con el valor op que seria la operacion como tal
+        const op = button.dataset.op;
+        // coloco los input en el array correspondiente a cada matriz
+        readMatrix(matrixA, matrixAContainer);
+        readMatrix(matrixB, matrixBContainer);
+        switch (op) {
+            case "add":
+                displayMatrix(addMatrices(matrixA, matrixB));
+                break;
+            case "subAB":
+                displayMatrix(subMatrices(matrixA, matrixB));
+                break;
+            case "subBA":
+                displayMatrix(subMatrices(matrixB, matrixA));
+                break;
+            case "mul":
+                displayMatrix(multiplyMatrices(matrixA, matrixB));
+                break;
+            case "scalarA":
+                // muestro el input para el escalar
+                scalarInputSection.style.display = "block";
+                // el evento onchange para guardar el valor del escalar cuando
+                // el usuario haga un cambio/ingrese un numero
+                scalarValueInput.onchange = () => {
+                    const k = parseFloat(scalarValueInput.value);
+                    // prevencion de que no sea NaN not a number o sea nulo
+                    if (isNaN(k) || null ) {
+                        messageDiv.textContent = "Ingrese un valor numerico valido para k.";
+                        return;
+                    }
+                    // al ejecutar esta funcion se mostraria el resultado de la multiplicacion
+                    // por el escalar directamente
+                    displayMatrix(scalarMultiply(matrixA, k));
+                };
+                break;
+            default:
+                break;
+        }
+    });
+});
+
 // manejando tamaño de matriz
 selectSize.addEventListener("change", () => {
+    // si se cambia el tamaño de las matrices se vacia el contenido del resultado
+    resultContainer.innerHTML = "";
     n = parseInt(selectSize.value);
     createMatrixInputs(matrixAContainer, matrixA);
     createMatrixInputs(matrixBContainer, matrixB);
