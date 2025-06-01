@@ -32,6 +32,13 @@ function createMatrixInputs(container, matrixArray) {
     }
 }
 
+// manejando tamaño de matriz
+sizeSelect.addEventListener("change", () => {
+    n = parseInt(sizeSelect.value);
+    createMatrixInputs(matrixAContainer, matrixA);
+    createMatrixInputs(matrixBContainer, matrixB);
+});
+
 // llamo la funcion para inicializar las dos matrices
 createMatrixInputs(matrixAContainer, matrixA);
 createMatrixInputs(matrixBContainer, matrixB);
