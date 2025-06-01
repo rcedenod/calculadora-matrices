@@ -35,6 +35,25 @@ h1, h2 {
     justify-content: space-evenly;
 }
 
+#matrixA, #matrixB {
+    display: grid;
+    gap: 15px;
+    justify-content: center;
+    margin: 15px;
+}
+
+input {
+    width: 60px;
+    text-align: center;
+    padding: 8px 12px;
+    margin: 5px;
+    border-radius: 8px;
+    background-color: transparent;
+    border-color: black;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+
 button {
     padding: 8px 12px;
     margin: 5px;
