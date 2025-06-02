@@ -14,6 +14,7 @@ const scalarInputSection = document.getElementById("scalarInput");
 const scalarValueInput = document.getElementById("scalarValue");
 const identityInputSection = document.getElementById("identityInput");
 const identitySizeSelect = document.getElementById("identitySize");
+const inverseVerification = document.getElementById("inverseVerification");
 
 let n = parseInt(selectSize.value);
 let matrixA = [];
@@ -36,7 +37,7 @@ function createMatrixInputs(container, matrixArray) {
             input.type = "number";
             input.value = "0";
             input.addEventListener("input", () => {
-                matrixArray[i][j] = parseFloat(input.value) || 0;
+                matrixArray[i][j] = parseFloat(input.value);
             });
             matrixArray[i][j] = 0;
             // agrego este hijo (el input) a su contenedor, en este caso "container"
@@ -51,6 +52,7 @@ function randomValues(matrixArray, container) {
     identityInputSection.style.display = "none";
     scalarInputSection.style.display = "none";
     messageDiv.textContent = "";
+    inverseVerification.style.display = "none";
     // obtengo todos los inputs
     const inputs = container.querySelectorAll("input");
     // por cada input, obtengo su correspondiete indice en el array de matriz
@@ -70,6 +72,7 @@ function clearMatrix(matrixArray, container) {
     identityInputSection.style.display = "none";
     scalarInputSection.style.display = "none";
     messageDiv.textContent = "";
+    inverseVerification.style.display = "none";
     // obtengo todos los inputs
     const inputs = container.querySelectorAll("input");
     // a cada input le asigno 0 y a su posicion en el array de matriz
@@ -245,7 +248,10 @@ function displayMatrix(matrix) {
         row.forEach(val => {
             const cell = document.createElement("input");
             cell.type = "number";
-            cell.value = val;
+            cell.value = val.toFixed(2);
+            if (val == -0.00) {
+                val = 0.00
+            }
             cell.disabled = true;
             resultContainer.appendChild(cell);
         });
@@ -316,11 +322,14 @@ operations.forEach(button => {
                     return;
                 }
                 displayMatrix(invA);
+                inverseVerification.style.display = "block";
+
                 break;
             case "identity":
                 messageDiv.textContent = "";
                 resultContainer.innerHTML = "";
                 scalarInputSection.style.display = "none";
+                inverseVerification.style.display = "none";
                 identityInputSection.style.display = "block";
                 identitySizeSelect.focus();
                 identitySizeSelect.onchange = () => {
@@ -341,6 +350,7 @@ selectSize.addEventListener("change", () => {
     identityInputSection.style.display = "none";
     scalarInputSection.style.display = "none";
     messageDiv.textContent = "";
+    inverseVerification.style.display = "none";
     n = parseInt(selectSize.value);
     createMatrixInputs(matrixAContainer, matrixA);
     createMatrixInputs(matrixBContainer, matrixB);
@@ -352,6 +362,10 @@ randomBButton.addEventListener("click", () => randomValues(matrixB, matrixBConta
 // eventos para limpiar A y limpiar B
 clearAButton.addEventListener("click", () => clearMatrix(matrixA, matrixAContainer));
 clearBButton.addEventListener("click", () => clearMatrix(matrixB, matrixBContainer));
+
+inverseVerification.addEventListener("click", () => {
+    displayMatrix( multiply( matrixA, inverse(matrixA) ) );
+});
 
 // llamo la funcion para inicializar las dos matrices
 createMatrixInputs(matrixAContainer, matrixA);
