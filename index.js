@@ -179,40 +179,52 @@ function determinant(A) {
 
 // inversa
 function inverse(A) {
-    const M = A.map(row => row.slice());
-    const I = [];
-    for (let i = 0; i < n; i++) {
-        I[i] = [];
-        for (let j = 0; j < n; j++) {
-            I[i][j] = i === j ? 1 : 0;
-        }
-    }
-    for (let i = 0; i < n; i++) {
+      const n = A.length;
+      // Copia profunda de A en M
+      const M = A.map(row => row.slice());
+      // Crear matriz identidad I de tamaño n
+      const I = [];
+      for (let i = 0; i < n; i++) {
+        I[i] = Array(n).fill(0);
+        I[i][i] = 1;
+      }
+
+      for (let i = 0; i < n; i++) {
+        // Pivoteo parcial: buscar fila con mayor |M[row][i]| a partir de la fila i
         let pivot = i;
         for (let j = i + 1; j < n; j++) {
-            if (Math.abs(M[j][i]) > Math.abs(M[pivot][i])) pivot = j;
+          if (Math.abs(M[j][i]) > Math.abs(M[pivot][i])) {
+            pivot = j;
+          }
         }
-        if (Math.abs(M[pivot][i]) < 1e-10) return null;
+        // Si el valor absoluto del pivote es (casi) cero, la matriz es singular
+        if (Math.abs(M[pivot][i]) < 1e-10) {
+          return null;
+        }
+        // Intercambiar filas i y pivot en M e I
         [M[i], M[pivot]] = [M[pivot], M[i]];
         [I[i], I[pivot]] = [I[pivot], I[i]];
 
-        const pivotVal = M[i][i];
+        // Dividir la fila pivote por su elemento principal (normalizar a 1)
+        const pivVal = M[i][i];
         for (let j = 0; j < n; j++) {
-            M[i][j] /= pivotVal;
-            I[i][j] /= pivotVal;
+          M[i][j] /= pivVal;
+          I[i][j] /= pivVal;
         }
 
+        // Anular las demás filas en la columna i
         for (let j = 0; j < n; j++) {
-            if (j !== i) {
-                const factor = M[j][i];
-                for (let k = 0; k < n; k++) {
-                    M[j][k] -= factor * M[i][k];
-                    I[j][k] -= factor * I[i][k];
-                }
+          if (j !== i) {
+            const factor = M[j][i];
+            for (let k = 0; k < n; k++) {
+              M[j][k] -= factor * M[i][k];
+              I[j][k] -= factor * I[i][k];
             }
+          }
         }
-    }
-    return I;
+      }
+
+      return I;
 }
 
 // matriz identidad
@@ -248,10 +260,7 @@ function displayMatrix(matrix) {
         row.forEach(val => {
             const cell = document.createElement("input");
             cell.type = "number";
-            cell.value = val.toFixed(2);
-            if (val == -0.00) {
-                val = 0.00
-            }
+            cell.value = val;
             cell.disabled = true;
             resultContainer.appendChild(cell);
         });
@@ -287,6 +296,7 @@ operations.forEach(button => {
             case "scalarA":
                 // muestro el input para el escalar
                 identityInputSection.style.display = "none";
+                inverseVerification.style.display = "none";
                 scalarInputSection.style.display = "block";
                 // el evento onchange para guardar el valor del escalar cuando
                 // el usuario haga un cambio/ingrese un numero
@@ -307,6 +317,7 @@ operations.forEach(button => {
                 displayMatrix(transpose(matrixA));
                 break;
             case "detA":
+                inverseVerification.style.display = "none";
                 const detVal = determinant(matrixA);
                 messageDiv.textContent = `det(A) = ${detVal.toFixed(4)}`;
                 break;

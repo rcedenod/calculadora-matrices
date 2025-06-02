@@ -14,7 +14,7 @@ html, body {
 header {
     background: #dfe0de;
     height: 50px;
-    opacity: 0.85;
+    opacity: 0.9;
     justify-content: center;
     align-items: center;
     display: flex;
@@ -29,7 +29,7 @@ header {
     padding: 10px;
     border-radius: 5px;
     margin-top: 20px;
-    opacity: 0.85;
+    opacity: 0.9;
 }
 
 #selectSize {
@@ -60,7 +60,7 @@ h1, h2 {
 
 input {
     width: 50px;
-    font-size: 14px;
+    font-size: 16px;
     text-align: center;
     border-radius: 4px;
     background-color: transparent;
