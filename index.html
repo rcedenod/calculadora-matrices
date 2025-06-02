@@ -8,18 +8,19 @@
 </head>
 <body>
 
+    <header>
+        <h1>Calculadora de matrices </h1>
+        <select id="selectSize">
+            <!-- ciclo for que me escribe los posibles tamaños (2x2, 3x3,...) -->
+            <script>
+                for (let i = 2; i <= 10; i++) {
+                    document.write(`<option value="${i}">${i} × ${i}</option>`);
+                }
+            </script>
+        </select>
+    </header>
+
     <div class="container">
-        <header>
-            <h1>Calculadora de matrices </h1>
-            <select id="selectSize">
-                <!-- ciclo for que me escribe los posibles tamaños (2x2, 3x3,...) -->
-                <script>
-                    for (let i = 2; i <= 10; i++) {
-                        document.write(`<option value="${i}">${i} × ${i}</option>`);
-                    }
-                </script>
-            </select>
-        </header>
 
         <!-- mostrar las matrices A y B -->
         <main class="matrix">
@@ -27,7 +28,7 @@
                 <h2>Matriz A</h2>
                 <div id="matrixA"></div>
             </div>
-
+            
             <div class="matrix-container">
                 <h2>Matriz B</h2>
                 <div id="matrixB"></div>
@@ -49,7 +50,6 @@
 
         <!-- operaciones -->
         <section>
-            <h2>Operaciones</h2>
             <div class="operations">
                 <!-- el data-* lo que permite es crear un atributo "personalizado" en los botones -->   
                 <!-- en el .js, con button.dataset me permitiria obtener a que operacion pertenece a cada boton -->
@@ -57,15 +57,15 @@
                 <button data-op="subAB">A - B</button>
                 <button data-op="subBA">B - A</button>
                 <button data-op="mul">A × B</button>
-                <button data-op="scalarA">Escalar × A</button>
+                <button data-op="scalarA">k × A</button>
                 <button data-op="transposeA">A<sup>T</sup></button>
                 <button data-op="detA">det(A)</button>
                 <button data-op="invA">A<sup>-1</sup></button>
-                <button data-op="identity">Matriz Identidad</button>
+                <button data-op="identity">Matriz identidad</button>
             </div>
         </section>
 
-        <section>
+        <section class="extras-section">
             <!-- inputs extra para el escalar k y el tamaño de la matriz identidad (ambos escondidos al principio) -->
             <div class="extra-input" id="scalarInput" style="display: none;">
                 <label for="scalarValue">Valor de k:</label>
@@ -86,13 +86,14 @@
         </section>
 
         <!-- resultado de la operacion-->
-        <footer class="footer">
-            <h2 id="result-h2">Resultado</h2>
+        <div class="result-container">
+            <h2>Resultado</h2>
             <!-- para mostrar resultados-->
             <div id="result"></div>
             <!-- para mensajer de error -->
             <div id="message" class="message"></div>
-        </footer>
+        </div>
+
     </div>
 
     <script src="index.js"></script>

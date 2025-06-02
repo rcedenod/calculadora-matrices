@@ -10,6 +10,10 @@ const operations = document.querySelectorAll(".operations button");
 const resultText = document.querySelector(".footer h2") 
 const resultContainer = document.getElementById("result");
 const messageDiv = document.getElementById("message");
+const scalarInputSection = document.getElementById("scalarInput");
+const scalarValueInput = document.getElementById("scalarValue");
+const identityInputSection = document.getElementById("identityInput");
+const identitySizeSelect = document.getElementById("identitySize");
 
 let n = parseInt(selectSize.value);
 let matrixA = [];
@@ -43,6 +47,10 @@ function createMatrixInputs(container, matrixArray) {
 
 // valores aleatorios
 function randomValues(matrixArray, container) {
+    resultContainer.innerHTML = "";
+    identityInputSection.style.display = "none";
+    scalarInputSection.style.display = "none";
+    messageDiv.textContent = "";
     // obtengo todos los inputs
     const inputs = container.querySelectorAll("input");
     // por cada input, obtengo su correspondiete indice en el array de matriz
@@ -58,6 +66,10 @@ function randomValues(matrixArray, container) {
 
 // limpiar matriz
 function clearMatrix(matrixArray, container) {
+    resultContainer.innerHTML = "";
+    identityInputSection.style.display = "none";
+    scalarInputSection.style.display = "none";
+    messageDiv.textContent = "";
     // obtengo todos los inputs
     const inputs = container.querySelectorAll("input");
     // a cada input le asigno 0 y a su posicion en el array de matriz
@@ -73,7 +85,7 @@ function clearMatrix(matrixArray, container) {
 // las cuales retornan siempre una matriz
 
 // suma de matrices
-function addMatrices(A, B) {
+function add(A, B) {
     const C = [];
     for (let i = 0; i < n; i++) {
         C[i] = [];
@@ -85,7 +97,7 @@ function addMatrices(A, B) {
 }
 
 // resta de matrices
-function subMatrices(A, B) {
+function sub(A, B) {
     const C = [];
     for (let i = 0; i < n; i++) {
         C[i] = [];
@@ -97,7 +109,7 @@ function subMatrices(A, B) {
 }
 
 // multiplicacion de matrices
-function multiplyMatrices(A, B) {
+function multiply(A, B) {
     const C = [];
     for (let i = 0; i < n; i++) {
         C[i] = [];
@@ -122,6 +134,94 @@ function scalarMultiply(A, k) {
         }
     }
     return C;
+}
+
+// transpuesta
+function transpose(A) {
+    const C = [];
+    for (let i = 0; i < A.length; i++) {
+        C[i] = [];
+        for (let j = 0; j < A.length; j++) {
+            C[i][j] = A[j][i];
+        }
+    }
+    return C;
+}
+
+// determinante
+function determinant(A) {
+    const M = A.map(row => row.slice());
+    let det = 1;
+    for (let i = 0; i < n; i++) {
+        let pivot = i;
+        for (let j = i + 1; j < n; j++) {
+            if (Math.abs(M[j][i]) > Math.abs(M[pivot][i])) pivot = j;
+        }
+        if (Math.abs(M[pivot][i]) < 1e-10) return 0;
+        if (i !== pivot) {
+            [M[i], M[pivot]] = [M[pivot], M[i]];
+            det *= -1;
+        }
+        det *= M[i][i];
+
+        for (let j = i + 1; j < n; j++) {
+            const factor = M[j][i] / M[i][i];
+            for (let k = i; k < n; k++) {
+                M[j][k] -= factor * M[i][k];
+            }
+        }
+    }
+    return det;
+}
+
+// inversa
+function inverse(A) {
+    const M = A.map(row => row.slice());
+    const I = [];
+    for (let i = 0; i < n; i++) {
+        I[i] = [];
+        for (let j = 0; j < n; j++) {
+            I[i][j] = i === j ? 1 : 0;
+        }
+    }
+    for (let i = 0; i < n; i++) {
+        let pivot = i;
+        for (let j = i + 1; j < n; j++) {
+            if (Math.abs(M[j][i]) > Math.abs(M[pivot][i])) pivot = j;
+        }
+        if (Math.abs(M[pivot][i]) < 1e-10) return null;
+        [M[i], M[pivot]] = [M[pivot], M[i]];
+        [I[i], I[pivot]] = [I[pivot], I[i]];
+
+        const pivotVal = M[i][i];
+        for (let j = 0; j < n; j++) {
+            M[i][j] /= pivotVal;
+            I[i][j] /= pivotVal;
+        }
+
+        for (let j = 0; j < n; j++) {
+            if (j !== i) {
+                const factor = M[j][i];
+                for (let k = 0; k < n; k++) {
+                    M[j][k] -= factor * M[i][k];
+                    I[j][k] -= factor * I[i][k];
+                }
+            }
+        }
+    }
+    return I;
+}
+
+// matriz identidad
+function identity(size) {
+    const I = [];
+    for (let i = 0; i < size; i++) {
+        I[i] = [];
+        for (let j = 0; j < size; j++) {
+            I[i][j] = i === j ? 1 : 0;
+        }
+    }
+    return I;
 }
 
 // leo los inputs de la matriz para colocarlos en su array 
@@ -167,22 +267,24 @@ operations.forEach(button => {
         readMatrix(matrixB, matrixBContainer);
         switch (op) {
             case "add":
-                displayMatrix(addMatrices(matrixA, matrixB));
+                displayMatrix(add(matrixA, matrixB));
                 break;
             case "subAB":
-                displayMatrix(subMatrices(matrixA, matrixB));
+                displayMatrix(sub(matrixA, matrixB));
                 break;
             case "subBA":
-                displayMatrix(subMatrices(matrixB, matrixA));
+                displayMatrix(sub(matrixB, matrixA));
                 break;
             case "mul":
-                displayMatrix(multiplyMatrices(matrixA, matrixB));
+                displayMatrix(multiply(matrixA, matrixB));
                 break;
             case "scalarA":
                 // muestro el input para el escalar
+                identityInputSection.style.display = "none";
                 scalarInputSection.style.display = "block";
                 // el evento onchange para guardar el valor del escalar cuando
                 // el usuario haga un cambio/ingrese un numero
+                scalarValueInput.focus();
                 scalarValueInput.onchange = () => {
                     const k = parseFloat(scalarValueInput.value);
                     // prevencion de que no sea NaN not a number o sea nulo
@@ -195,6 +297,37 @@ operations.forEach(button => {
                     displayMatrix(scalarMultiply(matrixA, k));
                 };
                 break;
+                        case "transposeA":
+                displayMatrix(transpose(matrixA));
+                break;
+            case "detA":
+                const detVal = determinant(matrixA);
+                messageDiv.textContent = `det(A) = ${detVal.toFixed(4)}`;
+                break;
+            case "invA":
+                const detA = determinant(matrixA);
+                if (Math.abs(detA) < 1e-10) {
+                    messageDiv.textContent = "La matriz no es invertible (det(A) = 0).";
+                    return;
+                }
+                const invA = inverse(matrixA);
+                if (!invA) {
+                    messageDiv.textContent = "Error al calcular la inversa.";
+                    return;
+                }
+                displayMatrix(invA);
+                break;
+            case "identity":
+                messageDiv.textContent = "";
+                resultContainer.innerHTML = "";
+                scalarInputSection.style.display = "none";
+                identityInputSection.style.display = "block";
+                identitySizeSelect.focus();
+                identitySizeSelect.onchange = () => {
+                    const size = parseInt(identitySizeSelect.value);
+                    displayMatrix(identity(size));
+                };
+                break;
             default:
                 break;
         }
@@ -205,6 +338,9 @@ operations.forEach(button => {
 selectSize.addEventListener("change", () => {
     // si se cambia el tamaño de las matrices se vacia el contenido del resultado
     resultContainer.innerHTML = "";
+    identityInputSection.style.display = "none";
+    scalarInputSection.style.display = "none";
+    messageDiv.textContent = "";
     n = parseInt(selectSize.value);
     createMatrixInputs(matrixAContainer, matrixA);
     createMatrixInputs(matrixBContainer, matrixB);
