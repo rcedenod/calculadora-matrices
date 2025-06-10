@@ -9,30 +9,41 @@
 <body>
 
     <header>
-        <h1>Calculadora de matrices </h1>
-        <select id="selectSize">
-            <!-- ciclo for que me escribe los posibles tamaños (2x2, 3x3,...) -->
-            <script>
-                for (let i = 2; i <= 10; i++) {
-                    document.write(`<option value="${i}">${i} × ${i}</option>`);
-                }
-            </script>
-        </select>
+        <h1>Calculadora de matrices</h1>
     </header>
 
     <div class="container">
 
-        <!-- mostrar las matrices A y B -->
+        <!-- mostrar las matrices A y B con su select de tamaño al lado -->
         <main class="matrix">
             <div class="matrix-container">
-                <h2>Matriz A</h2>
+                <div class="matrix-header">
+                    <h2>Matriz A</h2>
+                    <label for="selectSizeA">Tamaño:</label>
+                    <select id="selectSizeA">
+                        <script>
+                            for (let i = 2; i <= 10; i++) {
+                                document.write(`<option value="${i}">${i} × ${i}</option>`);
+                            }
+                        </script>
+                    </select>
+                </div>
                 <div id="matrixA"></div>
             </div>
             
             <div class="matrix-container">
-                <h2>Matriz B</h2>
+                <div class="matrix-header">
+                    <h2>Matriz B</h2>
+                    <label for="selectSizeB">Tamaño:</label>
+                    <select id="selectSizeB">
+                        <script>
+                            for (let i = 2; i <= 10; i++) {
+                                document.write(`<option value="${i}">${i} × ${i}</option>`);
+                            }
+                        </script>
+                    </select>
+                </div>
                 <div id="matrixB"></div>
-                
             </div>
         </main>
 
@@ -51,8 +62,6 @@
         <!-- operaciones -->
         <section>
             <div class="operations">
-                <!-- el data-* lo que permite es crear un atributo "personalizado" en los botones -->   
-                <!-- en el .js, con button.dataset me permitiria obtener a que operacion pertenece a cada boton -->
                 <button data-op="add">A + B</button>
                 <button data-op="subAB">A - B</button>
                 <button data-op="subBA">B - A</button>
@@ -66,7 +75,7 @@
         </section>
 
         <section class="extras-section">
-            <!-- inputs extra para el escalar k y el tamaño de la matriz identidad (ambos escondidos al principio) -->
+            <!-- inputs extra para el escalar k y tamaño de identidad -->
             <div class="extra-input" id="scalarInput" style="display: none;">
                 <label for="scalarValue">Valor de k:</label>
                 <input type="number" id="scalarValue" step="any" />
@@ -79,7 +88,6 @@
             <div class="extra-input" id="identityInput" style="display: none;">
                 <label for="identitySize">Tamaño identidad:</label>
                 <select id="identitySize">
-                    <!-- ciclo for que me escribe los posibles tamaños para la matriz identidad (2x2, 3x3,...) -->
                     <script>
                         for (let i = 2; i <= 10; i++) {
                             document.write(`<option value="${i}">${i} × ${i}</option>`);
@@ -90,12 +98,10 @@
 
         </section>
 
-        <!-- resultado de la operacion-->
+        <!-- resultado de la operacion--> 
         <div class="result-container">
             <h2>Resultado</h2>
-            <!-- para mostrar resultados-->
             <div id="result"></div>
-            <!-- para mensajer de error -->
             <div id="message" class="message"></div>
         </div>
 
