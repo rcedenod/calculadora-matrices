@@ -14,12 +14,10 @@
 
     <div class="container">
 
-        <!-- mostrar las matrices A y B con su select de tamaño al lado -->
         <main class="matrix">
             <div class="matrix-container">
                 <div class="matrix-header">
                     <h2>Matriz A</h2>
-                    <label for="selectSizeA">Tamaño:</label>
                     <select id="selectSizeA">
                         <script>
                             for (let i = 2; i <= 10; i++) {
@@ -28,13 +26,19 @@
                         </script>
                     </select>
                 </div>
+
                 <div id="matrixA"></div>
+
+                <div>
+                    <button id="randomA">Valores aleatorios A</button>
+                    <button id="clearA">Limpiar valores A</button>
+                </div>
+
             </div>
             
             <div class="matrix-container">
                 <div class="matrix-header">
                     <h2>Matriz B</h2>
-                    <label for="selectSizeB">Tamaño:</label>
                     <select id="selectSizeB">
                         <script>
                             for (let i = 2; i <= 10; i++) {
@@ -43,43 +47,39 @@
                         </script>
                     </select>
                 </div>
+
                 <div id="matrixB"></div>
+
+                <div>
+                    <button id="randomB">Valores aleatorios B</button>
+                    <button id="clearB">Limpiar valores B</button>
+                </div>
+
             </div>
         </main>
 
-        <section class="controls">
-            <div>
-                <button id="randomA">Valores aleatorios A</button>
-                <button id="clearA">Limpiar valores A</button>
-            </div>
-
-            <div>
-                <button id="randomB">Valores aleatorios B</button>
-                <button id="clearB">Limpiar valores B</button>
-            </div>
-        </section>
-
-        <!-- operaciones -->
         <section>
             <div class="operations">
-                <button data-op="add">A + B</button>
-                <button data-op="subAB">A - B</button>
-                <button data-op="subBA">B - A</button>
-                <button data-op="mul">A × B</button>
-                <button data-op="scalarA">k × A</button>
-                <button data-op="transposeA">A<sup>T</sup></button>
-                <button data-op="detA">det(A)</button>
-                <button data-op="invA">A<sup>-1</sup></button>
-                <button data-op="identity">Matriz identidad</button>
+                <button id="addAB">A + B</button>
+                <button id="subtractAB">A - B</button>
+                <button id="subtractBA">B - A</button>
+                <button id="multiplyAB">A × B</button>
+                <button id="scalarA">k × A</button>
+                <button id="transposeA">A<sup>T</sup></button>
+                <button id="determinantA">det(A)</button>
+                <button id="inverseA">A<sup>-1</sup></button>
+                <button id="identity">Matriz identidad</button>
             </div>
         </section>
 
         <section class="extras-section">
-            <!-- inputs extra para el escalar k y tamaño de identidad -->
+
             <div class="extra-input" id="scalarInput" style="display: none;">
                 <label for="scalarValue">Valor de k:</label>
                 <input type="number" id="scalarValue" step="any" />
+                <button id="applyScalar">Listo</button>
             </div>
+
 
             <div class="extra-input" id="inverseVerification" style="display: none;">
                 <button id="inverseVerificationButton">Verificar A * A<sup>-1</sup></button>
@@ -98,7 +98,6 @@
 
         </section>
 
-        <!-- resultado de la operacion--> 
         <div class="result-container">
             <h2>Resultado</h2>
             <div id="result"></div>
